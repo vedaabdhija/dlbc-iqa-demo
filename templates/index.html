@@ -1135,12 +1135,11 @@
       <div id="login-step">
         <div class="auth-form-group">
           <label>Employee ID / Email</label>
-          <input class="auth-input" id="auth-id" placeholder="e.g. narasimha@dlbce.ac.in"
-            value="narasimha@dlbce.ac.in" />
+          <input class="auth-input" id="auth-id" placeholder="e.g. narasimha@dlbce.ac.in" />
         </div>
         <div class="auth-form-group">
           <label>Password</label>
-          <input class="auth-input" type="password" id="auth-pass" placeholder="Enter password" value="Admin@1234" />
+          <input class="auth-input" type="password" id="auth-pass" placeholder="Enter password" />
         </div>
         <button class="auth-btn" onclick="doLogin()">Log In</button>
       </div>
@@ -1807,23 +1806,44 @@
         <button class="btn btn-primary" onclick="submitAlert()">Send In-App Alert</button>`);
     }
 
-    function submitAlert() {
+    // UPDATED submitAlert FUNCTION FOR DATABASE CONNECTION
+    async function submitAlert() {
       const msg = document.getElementById('alert-msg').value.trim();
       if (!msg) return showToast("Message is required.");
 
-      notifications.unshift({
-        id: Date.now(),
+      const payload = {
         text: msg,
         time: new Date().toISOString(),
         type: document.getElementById('alert-priority').value,
-        read: false,
         target: document.getElementById('alert-target').value
-      });
+      };
 
+      try {
+        // Send the notification to the database
+        const res = await fetch(`${API_URL}/notifications`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          await fetchCoreData(); // This refreshes the list from the database
+          closeModal();
+          updateNotifBadge();
+          showPage('notifications');
+          showToast("Alert successfully broadcasted to all users.");
+          return;
+        }
+      } catch (e) {
+        console.error("Failed to send notification to DB", e);
+      }
+
+      // Fallback just in case the DB is temporarily offline
+      notifications.unshift({ ...payload, id: Date.now(), read: false });
       closeModal();
       updateNotifBadge();
       showPage('notifications');
-      showToast("Alert successfully broadcasted to users.");
+      showToast("Alert saved locally (Database unreachable).");
     }
 
     // ════════════════════════════════════════════
