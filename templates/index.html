@@ -8,7 +8,6 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
     rel="stylesheet" />
-  <!-- PDF Generation Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
   <style>
@@ -189,7 +188,7 @@
       bottom: 0;
       left: 0;
       z-index: 100;
-      transition: transform .3s;
+      transition: transform .3s ease;
     }
 
     .sidebar-logo {
@@ -342,6 +341,33 @@
 
     .pwd-btn:hover {
       background: rgba(255, 255, 255, .05);
+    }
+
+    /* Mobile Toggle & Overlay */
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--navy);
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 44, 0.5);
+      z-index: 90;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .sidebar-overlay.open {
+      display: block;
+      opacity: 1;
     }
 
     .main {
@@ -650,460 +676,20 @@
     }
 
     .prog-wrap {
-      background: var(--gray-100);
-      border-radius: 20px;
-      height: 8px;
-      overflow: hidden;
+      display: none !important;
+    }
     }
 
-    .prog-fill {
-      height: 100%;
-      border-radius: 20px;
-      transition: width .5s;
-    }
-
-    .prog-fill.good {
-      background: var(--green);
-    }
-
-    .prog-fill.risk {
-      background: var(--orange);
-    }
-
-    .prog-fill.critical {
-      background: var(--red);
-    }
-
-    .prog-fill.navy {
-      background: var(--navy-mid);
-    }
-
-    .btn {
-      padding: .5rem 1rem;
-      border-radius: var(--radius-sm);
-      font-size: .82rem;
-      font-weight: 500;
-      border: none;
-      transition: all .15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      background: var(--navy);
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      background: var(--navy-light);
-    }
-
-    .btn-secondary {
-      background: var(--gray-100);
-      color: var(--gray-700);
-      border: 1px solid var(--gray-200);
-    }
-
-    .btn-secondary:hover {
-      background: var(--gray-200);
-    }
-
-    .btn-success {
-      background: #16a34a;
-      color: #fff;
-    }
-
-    .btn-success:hover {
-      background: #15803d;
-    }
-
-    .btn-danger {
-      background: #dc2626;
-      color: #fff;
-    }
-
-    .btn-danger:hover {
-      background: #b91c1c;
-    }
-
-    .btn-gold {
-      background: var(--gold);
-      color: #fff;
-    }
-
-    .btn-gold:hover {
-      background: #b8852a;
-    }
-
-    .btn-sm {
-      padding: .3rem .7rem;
-      font-size: .75rem;
-    }
-
-    /* Full Form Styling */
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
-    .form-label {
-      display: block;
-      font-size: .78rem;
-      font-weight: 500;
-      color: var(--gray-700);
-      margin-bottom: .3rem;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: .55rem .8rem;
-      border: 1.5px solid var(--gray-200);
-      border-radius: var(--radius-sm);
-      font-size: .85rem;
-      transition: border .2s;
-      background: #fff;
-    }
-
-    .form-control:focus {
-      outline: none;
-      border-color: var(--navy-mid);
-    }
-
-    .field-row {
-      display: grid;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .field-row.cols-2 {
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-
-    .field-row.cols-3 {
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    }
-
-    .field-row.cols-4 {
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    }
-
-    .field-row.cols-1 {
-      grid-template-columns: 1fr;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .field label {
-      font-size: 12px;
-      color: var(--gray-500);
-      font-weight: 500;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      font-size: 13px;
-      width: 100%;
-      padding: .55rem .8rem;
-      border: 1.5px solid var(--gray-200);
-      border-radius: var(--radius-sm);
-    }
-
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      outline: none;
-      border-color: var(--navy-mid);
-    }
-
-    .field textarea {
-      min-height: 64px;
-      resize: vertical;
-    }
-
-    .repeatable {
-      border: 1px dashed var(--gray-300);
-      border-radius: var(--radius-sm);
-      padding: 12px;
-      margin-bottom: 10px;
-      position: relative;
-      background: var(--gray-50);
-    }
-
-    .repeatable .remove-btn {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      font-size: 11px;
-      color: var(--red);
-      cursor: pointer;
-      background: none;
-      border: none;
-      padding: 0;
-      font-weight: 600;
-    }
-
-    .add-row-btn {
-      font-size: 12px;
-      padding: 6px 12px;
-      margin-top: 6px;
-      cursor: pointer;
-      background: transparent;
-      border: 1px dashed var(--navy-mid);
-      border-radius: var(--radius-sm);
-      color: var(--navy-mid);
-      font-weight: 600;
-      width: 100%;
-      transition: 0.2s;
-    }
-
-    .add-row-btn:hover {
-      background: var(--navy-subtle);
-    }
-
-    .sec-card {
-      background: #fff;
-      border-radius: var(--radius);
-      border: 1px solid var(--gray-200);
-      padding: 1.25rem;
-      margin-bottom: 1rem;
-    }
-
-    .sec-title {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      margin-bottom: .25rem;
-    }
-
-    .sec-num {
-      width: 24px;
-      height: 24px;
-      background: var(--navy);
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: .7rem;
-      font-weight: 600;
-      flex-shrink: 0;
-    }
-
-    .sec-title-text {
-      font-size: .9rem;
-      font-weight: 600;
-      color: var(--navy);
-    }
-
-    .sec-sub {
-      font-size: .75rem;
-      color: var(--gray-400);
-      margin-bottom: .9rem;
-      margin-left: 30px;
-    }
-
-    .tab-nav {
-      display: flex;
-      gap: 4px;
-      border-bottom: 2px solid var(--gray-100);
-      margin-bottom: 1.25rem;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-
-    .tab-btn {
-      padding: .5rem 1rem;
-      font-size: .82rem;
-      font-weight: 500;
-      color: var(--gray-500);
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      cursor: pointer;
-      transition: all .15s;
-    }
-
-    .tab-btn.active {
-      color: var(--navy);
-      border-bottom-color: var(--navy);
-    }
-
-    .tab-btn:hover {
-      color: var(--navy);
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      background: var(--navy);
-      color: #fff;
-      padding: .65rem 1.1rem;
-      border-radius: var(--radius-sm);
-      font-size: .83rem;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all .3s;
-      pointer-events: none;
-      z-index: 999;
-      box-shadow: var(--shadow-lg);
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(10, 20, 44, .5);
-      z-index: 200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-
-    .modal-overlay.open {
-      display: flex;
-    }
-
-    .modal {
-      background: #fff;
-      border-radius: var(--radius);
-      max-width: 560px;
-      width: 100%;
-      max-height: 85vh;
-      overflow-y: auto;
-      box-shadow: var(--shadow-lg);
-    }
-
-    .modal-header {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--gray-100);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      background: #fff;
-      z-index: 1;
-    }
-
-    .modal-title {
-      font-size: .95rem;
-      font-weight: 600;
-      color: var(--navy);
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.2rem;
-      color: var(--gray-400);
-      cursor: pointer;
-    }
-
-    .modal-body {
-      padding: 1.25rem;
-    }
-
-    .modal-footer {
-      padding: .9rem 1.25rem;
-      border-top: 1px solid var(--gray-100);
-      display: flex;
-      gap: .6rem;
-      justify-content: flex-end;
-    }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--gray-100);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--gray-300);
-      border-radius: 10px;
-    }
-
-    /* Print Optimization */
-    @media print {
-      body {
-        background: white !important;
-        font-size: 11pt !important;
-        color: black !important;
-      }
-
-      .sidebar,
-      .topbar,
-      .tab-nav,
-      .add-row-btn,
-      .remove-btn,
-      .btn,
-      .toast,
-      .modal-overlay,
-      #auth-screen {
-        display: none !important;
-      }
-
-      .main {
-        margin-left: 0 !important;
-        padding: 0 !important;
-      }
-
-      .app-shell {
-        display: block !important;
-      }
-
-      .card,
-      .sec-card {
-        border: 1px solid #ddd !important;
-        box-shadow: none !important;
-        page-break-inside: avoid !important;
-        margin-bottom: 20px !important;
-      }
-
-      .card-header {
-        border-bottom: 1px solid #ddd !important;
-        background: #fafafa !important;
-        -webkit-print-color-adjust: exact;
-      }
-
-      input,
-      select,
-      textarea {
-        border: none !important;
-        border-bottom: 1px dashed #ccc !important;
-        border-radius: 0 !important;
-        background: transparent !important;
-        color: black !important;
-      }
-
-      .f-page {
-        display: block !important;
-      }
-
-      .prog-wrap {
-        display: none !important;
-      }
-    }
-
+    /* Mobile Responsiveness */
     @media(max-width:900px) {
+      .mobile-toggle {
+        display: block;
+        /* Show hamburger menu on mobile */
+      }
+
       .sidebar {
         transform: translateX(-100%);
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
       }
 
       .sidebar.open {
@@ -1112,10 +698,32 @@
 
       .main {
         margin-left: 0;
+        width: 100%;
+        overflow-x: hidden;
       }
 
-      .grid-2 {
-        grid-template-columns: 1fr;
+      .topbar {
+        padding: 0.75rem 1rem;
+      }
+
+      .topbar-title {
+        font-size: 0.95rem;
+      }
+
+      .page-content {
+        padding: 1rem;
+      }
+
+      .grid-2,
+      .kpi-grid,
+      .field-row.cols-2,
+      .field-row.cols-3,
+      .field-row.cols-4 {
+        grid-template-columns: 1fr !important;
+      }
+
+      .hide-on-mobile {
+        display: none !important;
       }
     }
   </style>
@@ -1123,7 +731,6 @@
 
 <body>
 
-  <!-- ════════ AUTH SCREEN ════════ -->
   <div id="auth-screen" class="auth-wrap">
     <div class="auth-card">
       <div class="auth-logo">
@@ -1146,9 +753,10 @@
     </div>
   </div>
 
-  <!-- ════════ APP SHELL ════════ -->
   <div id="app-shell" class="app-shell" style="display:none;">
-    <!-- Sidebar -->
+
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
     <nav class="sidebar" id="sidebar">
       <div class="sidebar-logo">
         <div class="sidebar-logo-row">
@@ -1171,12 +779,15 @@
       </div>
     </nav>
 
-    <!-- Main -->
     <div class="main">
       <div class="topbar">
-        <span class="topbar-title" id="page-title">Dashboard</span>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+          <span class="topbar-title" id="page-title">Dashboard</span>
+        </div>
         <div class="topbar-right">
-          <span style="font-size:.78rem;color:var(--gray-400);margin-right:.5rem;" id="topbar-date"></span>
+          <span class="hide-on-mobile" style="font-size:.78rem;color:var(--gray-400);margin-right:.5rem;"
+            id="topbar-date"></span>
           <button class="notif-btn" onclick="showPage('notifications')">🔔<span class="notif-badge" id="notif-badge"
               style="display:none;">0</span></button>
         </div>
@@ -1185,7 +796,6 @@
     </div>
   </div>
 
-  <!-- ════════ MODAL ════════ -->
   <div class="modal-overlay" id="modal-overlay">
     <div class="modal" id="modal-box">
       <div class="modal-header">
@@ -1354,7 +964,7 @@
           if (data.success) {
             currentUser = data.user;
 
-            // Fix: Strip whitespace and standardize role casing from the database to prevent blank sidebars
+            // Strip whitespace and standardize role casing from the database to prevent blank sidebars
             if (currentUser && currentUser.role) {
               const r = currentUser.role.trim().toLowerCase();
               if (r === 'super admin') currentUser.role = 'Super Admin';
@@ -1381,7 +991,7 @@
       if (user) {
         currentUser = user;
 
-        // Fix: Apply the same standardization locally
+        // Apply the same standardization locally
         if (currentUser && currentUser.role) {
           const r = currentUser.role.trim().toLowerCase();
           if (r === 'super admin') currentUser.role = 'Super Admin';
@@ -1494,6 +1104,14 @@
       showPage('dashboard');
     }
 
+    // Toggle Sidebar Function for Mobile
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      if (sidebar) sidebar.classList.toggle('open');
+      if (overlay) overlay.classList.toggle('open');
+    }
+
     function buildSidebar() {
       const role = currentUser.role;
       let items = [];
@@ -1511,19 +1129,19 @@
         items = [
           { section: 'Overview', links: [{ icon: '📊', label: 'Dashboard', page: 'dashboard' }, { icon: '🔔', label: 'Notifications', page: 'notifications' }] },
           { section: 'Reports', links: [{ icon: '📈', label: 'Institution Summary', page: 'dept-reports' }, { icon: '👥', label: 'Committee Reports', page: 'comm-reports' }, { icon: '📄', label: 'Reports & Export', page: 'reports' }] },
-          { section: 'Resources', links: [{ icon: '📅', label: 'Academic Calendar', page: 'calendar' }] }, // ADDED CALENDAR FOR PRINCIPAL
+          { section: 'Resources', links: [{ icon: '📅', label: 'Academic Calendar', page: 'calendar' }] },
           { section: 'Help & Support', links: [{ icon: '❓', label: 'User Guide', page: 'guide' }, { icon: '✉️', label: 'Contact IT', page: 'contact' }] }
         ];
       } else {
-        // Fix: Changed 'else if' to 'else' to serve as a bulletproof fallback. 
-        // The sidebar will never be blank, even if an unrecognized role is added later.
+        // Bulletproof fallback for all other roles (HOD, Committee Head, etc.)
         items = [
           { section: 'Overview', links: [{ icon: '📊', label: 'Dashboard', page: 'dashboard' }, { icon: '🔔', label: 'Notifications', page: 'notifications' }] },
           { section: 'My Department', links: [{ icon: '📝', label: 'Submit Report', page: 'submit' }, { icon: '📋', label: 'My Submissions', page: 'submissions' }] },
-          { section: 'Resources', links: [{ icon: '📅', label: 'Academic Calendar', page: 'calendar' }] }, // ALREADY HERE FOR OTHERS
+          { section: 'Resources', links: [{ icon: '📅', label: 'Academic Calendar', page: 'calendar' }] },
           { section: 'Help & Support', links: [{ icon: '❓', label: 'User Guide', page: 'guide' }, { icon: '✉️', label: 'Contact IT', page: 'contact' }] }
         ];
       }
+
       let html = '';
       items.forEach(sec => {
         html += `<div class="nav-section-label">${sec.section}</div>`;
@@ -1564,6 +1182,14 @@
         case 'guide': c.innerHTML = buildGuidePage(); break;
         case 'contact': c.innerHTML = buildContactPage(); break;
         default: c.innerHTML = `<p>Page not found.</p>`;
+      }
+
+      // Auto-close sidebar on mobile after clicking a link
+      if (window.innerWidth <= 900) {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        if (sidebar) sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('open');
       }
     }
 
