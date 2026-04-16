@@ -1308,6 +1308,36 @@
     }
 
     // ════════════════════════════════════════════
+    // UTILITIES (TIMEZONE FIXES & LIVE CLOCK)
+    // ════════════════════════════════════════════
+    function formatDBDate(dateString) {
+      if (!dateString) return '';
+      let d = new Date(dateString);
+      // PostgreSQL timestamps often come back without 'Z' but represent UTC on Render.
+      if (typeof dateString === 'string' && dateString.includes('T') && !dateString.includes('Z') && !dateString.includes('+')) {
+        d = new Date(dateString + 'Z');
+      }
+      if (isNaN(d.getTime())) return dateString;
+      return d.toLocaleString('en-IN', {
+        day: 'numeric', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: true
+      });
+    }
+
+    function updateClock() {
+      const el = document.getElementById('topbar-date');
+      if (el) {
+        const now = new Date();
+        el.textContent = now.toLocaleString('en-IN', {
+          weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+        });
+      }
+    }
+    // Start the clock right away
+    setInterval(updateClock, 1000);
+
+    // ════════════════════════════════════════════
     // AUTH & API FETCHING
     // ════════════════════════════════════════════
     async function doLogin() {
@@ -1323,6 +1353,18 @@
           const data = await res.json();
           if (data.success) {
             currentUser = data.user;
+
+            // Fix: Strip whitespace and standardize role casing from the database to prevent blank sidebars
+            if (currentUser && currentUser.role) {
+              const r = currentUser.role.trim().toLowerCase();
+              if (r === 'super admin') currentUser.role = 'Super Admin';
+              else if (r === 'admin') currentUser.role = 'Admin';
+              else if (r === 'principal') currentUser.role = 'Principal';
+              else if (r === 'hod') currentUser.role = 'HOD';
+              else if (r === 'committee head') currentUser.role = 'Committee Head';
+              else currentUser.role = currentUser.role.trim();
+            }
+
             hideAuthError();
             launchApp();
             return;
@@ -1336,7 +1378,22 @@
       }
 
       const user = USERS.find(u => u.id === id && u.pass === pass);
-      if (user) { currentUser = user; hideAuthError(); launchApp(); }
+      if (user) {
+        currentUser = user;
+
+        // Fix: Apply the same standardization locally
+        if (currentUser && currentUser.role) {
+          const r = currentUser.role.trim().toLowerCase();
+          if (r === 'super admin') currentUser.role = 'Super Admin';
+          else if (r === 'admin') currentUser.role = 'Admin';
+          else if (r === 'principal') currentUser.role = 'Principal';
+          else if (r === 'hod') currentUser.role = 'HOD';
+          else if (r === 'committee head') currentUser.role = 'Committee Head';
+          else currentUser.role = currentUser.role.trim();
+        }
+
+        hideAuthError(); launchApp();
+      }
       else { showAuthError("Invalid credentials."); }
     }
 
@@ -1427,7 +1484,9 @@
       let deptText = currentUser.dept ? (DEPT_FULL[currentUser.dept] || currentUser.dept) : 'Institution Level';
       if (currentUser.dept && currentUser.dept.includes(',')) deptText = 'Multiple Committees Assigned';
       document.getElementById('sb-user-dept').textContent = deptText;
-      document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+
+      // Initialize the clock immediately on login
+      updateClock();
 
       await fetchCoreData();
       updateNotifBadge();
@@ -1452,13 +1511,16 @@
         items = [
           { section: 'Overview', links: [{ icon: '📊', label: 'Dashboard', page: 'dashboard' }, { icon: '🔔', label: 'Notifications', page: 'notifications' }] },
           { section: 'Reports', links: [{ icon: '📈', label: 'Institution Summary', page: 'dept-reports' }, { icon: '👥', label: 'Committee Reports', page: 'comm-reports' }, { icon: '📄', label: 'Reports & Export', page: 'reports' }] },
+          { section: 'Resources', links: [{ icon: '📅', label: 'Academic Calendar', page: 'calendar' }] }, // ADDED CALENDAR FOR PRINCIPAL
           { section: 'Help & Support', links: [{ icon: '❓', label: 'User Guide', page: 'guide' }, { icon: '✉️', label: 'Contact IT', page: 'contact' }] }
         ];
-      } else if (role === 'HOD' || role === 'Committee Head') {
+      } else {
+        // Fix: Changed 'else if' to 'else' to serve as a bulletproof fallback. 
+        // The sidebar will never be blank, even if an unrecognized role is added later.
         items = [
           { section: 'Overview', links: [{ icon: '📊', label: 'Dashboard', page: 'dashboard' }, { icon: '🔔', label: 'Notifications', page: 'notifications' }] },
           { section: 'My Department', links: [{ icon: '📝', label: 'Submit Report', page: 'submit' }, { icon: '📋', label: 'My Submissions', page: 'submissions' }] },
-          { section: 'Resources', links: [{ icon: '📅', label: 'Academic Calendar', page: 'calendar' }] },
+          { section: 'Resources', links: [{ icon: '📅', label: 'Academic Calendar', page: 'calendar' }] }, // ALREADY HERE FOR OTHERS
           { section: 'Help & Support', links: [{ icon: '❓', label: 'User Guide', page: 'guide' }, { icon: '✉️', label: 'Contact IT', page: 'contact' }] }
         ];
       }
@@ -1744,7 +1806,11 @@
     // ════════════════════════════════════════════
     function buildNotifications() {
       let html = `<div class="card">
-    <div class="card-header"><span class="card-title">Notifications & Alerts</span>
+    <div class="card-header">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button class="btn btn-secondary btn-sm" onclick="showPage('dashboard')" style="padding: 2px 8px;">← Back to Dashboard</button>
+        <span class="card-title">Notifications & Alerts</span>
+      </div>
       <div style="display:flex; gap: 0.5rem; flex-wrap:wrap;">
         ${(currentUser.role === 'Super Admin' || currentUser.role === 'Admin') ? `<button class="btn btn-primary btn-sm" onclick="openSendAlert()">+ Send Alert</button>` : ''}
         <button class="btn btn-secondary btn-sm" onclick="markAllRead()">Mark All Read</button>
@@ -1760,7 +1826,7 @@
           <div class="notif-dot ${n.type}"></div>
           <div>
             <div class="notif-text" style="font-weight:${n.read ? '400' : '600'};">${n.text}</div>
-            <div class="notif-time">${new Date(n.time).toLocaleString()}</div>
+            <div class="notif-time">${formatDBDate(n.time)}</div>
           </div>
         </div>`).join('');
       }
@@ -2174,7 +2240,7 @@
                             <span class="badge ${s.status === 'Approved' ? 'approved' : s.status === 'Rejected' ? 'rejected' : s.status === 'Draft' ? 'gold' : 'pending'}">${s.status}</span>
                         </div>
                         <h4 style="font-size:1rem; font-weight:600; color:var(--navy); margin-bottom:2px;">${s.dept}</h4>
-                        <div style="font-size:.8rem; color:var(--gray-500);">${s.month} ${s.year} • Submitted: ${new Date(s.created_at || s.submitted).toLocaleDateString()}</div>
+                        <div style="font-size:.8rem; color:var(--gray-500);">${s.month} ${s.year} • Submitted: ${formatDBDate(s.created_at || s.submitted)}</div>
                     </div>
                     <div style="display:flex; align-items:center; gap:10px; background:var(--gray-50); padding:8px 12px; border-radius:8px; border:1px solid var(--gray-100);">
                         <div style="font-size:.75rem; color:var(--gray-500); font-weight:500;">Completion</div>
@@ -2207,7 +2273,7 @@
             <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;">
               <div>
                  <div style="font-size:1rem;font-weight:600;color:var(--navy);">${s.dept}</div>
-                 <div style="font-size:.85rem;color:var(--gray-500);margin-top:4px;">${s.month} ${s.year}</div>
+                 <div style="font-size:.85rem;color:var(--gray-500);margin-top:4px;">${s.month} ${s.year} • ${formatDBDate(s.created_at || s.submitted)}</div>
               </div>
               <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
                 <button class="btn btn-secondary btn-sm" onclick="viewSubmission('${s.id}')">👁 View</button>
