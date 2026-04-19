@@ -346,13 +346,19 @@
     /* Mobile Toggle & Overlay */
     .mobile-toggle {
       display: none;
-      background: none;
-      border: none;
+      background: var(--navy-subtle);
+      border: 1px solid var(--gray-200);
       font-size: 1.4rem;
       color: var(--navy);
       cursor: pointer;
-      padding: 0;
+      padding: 0.3rem 0.5rem;
+      border-radius: var(--radius-sm);
       line-height: 1;
+      transition: background 0.2s;
+    }
+    
+    .mobile-toggle:hover {
+      background: var(--gray-200);
     }
 
     .sidebar-overlay {
@@ -1510,6 +1516,24 @@
     // ════════════════════════════════════════════
     // NOTIFICATIONS 
     // ════════════════════════════════════════════
+    function canUserViewNotif(n) {
+      const isAdmin = (currentUser.role === 'Super Admin' || currentUser.role === 'Admin');
+      if (isAdmin) return true;
+      
+      const t = n.target || 'All';
+      if (t === 'All') return true;
+
+      // Determine if user effectively acts as HOD or Committee Head based on their assigned departments string
+      const userDepts = currentUser.dept ? currentUser.dept.split(',').map(d => d.trim()) : [];
+      const actsAsHOD = currentUser.role === 'HOD' || userDepts.some(d => DEPARTMENTS.includes(d));
+      const actsAsComm = currentUser.role === 'Committee Head' || userDepts.some(d => COMMITTEES.includes(d));
+
+      if (t === 'HOD' && actsAsHOD) return true;
+      if (t === 'Committee' && actsAsComm) return true;
+
+      return false; // Hide if it doesn't match their role/responsibilities
+    }
+
     function buildNotifications() {
       let html = `<div class="card">
     <div class="card-header">
@@ -1526,17 +1550,7 @@
 
       const isAdmin = (currentUser.role === 'Super Admin' || currentUser.role === 'Admin');
       
-      // Filter notifications based on user role and the notification's target audience
-      const visibleNotifs = notifications.filter(n => {
-        if (isAdmin) return true; // Admins always see everything so they can manage them
-        
-        const t = n.target || 'All';
-        if (t === 'All') return true;
-        if (t === 'HOD' && currentUser.role === 'HOD') return true;
-        if (t === 'Committee' && currentUser.role === 'Committee Head') return true;
-        
-        return false; // Hide if it doesn't match their role
-      });
+      const visibleNotifs = notifications.filter(n => canUserViewNotif(n));
 
       if (visibleNotifs.length === 0) {
         html += `<p style="font-size:.8rem;color:var(--gray-400);">No notifications.</p>`;
@@ -1557,18 +1571,8 @@
     }
 
     function updateNotifBadge() {
-      const isAdmin = (currentUser.role === 'Super Admin' || currentUser.role === 'Admin');
-      
-      // Only count unread notifications that the user is actually allowed to see
-      const unread = notifications.filter(n => {
-        if (n.read) return false;
-        if (isAdmin) return true;
-        const t = n.target || 'All';
-        if (t === 'All') return true;
-        if (t === 'HOD' && currentUser.role === 'HOD') return true;
-        if (t === 'Committee' && currentUser.role === 'Committee Head') return true;
-        return false;
-      }).length;
+      // Only count unread notifications that the user is actually allowed to see based on our dynamic helper
+      const unread = notifications.filter(n => !n.read && canUserViewNotif(n)).length;
 
       const badge = document.getElementById('notif-badge');
       if (badge) {
@@ -1578,19 +1582,11 @@
     }
 
     function markAllRead() {
-      const isAdmin = (currentUser.role === 'Super Admin' || currentUser.role === 'Admin');
-      
       // Only mark the notifications as read if they are visible to the current user
       notifications.forEach(n => {
-        let canView = false;
-        if (isAdmin) canView = true;
-        else {
-          const t = n.target || 'All';
-          if (t === 'All' || (t === 'HOD' && currentUser.role === 'HOD') || (t === 'Committee' && currentUser.role === 'Committee Head')) {
-            canView = true;
-          }
+        if (canUserViewNotif(n)) {
+            n.read = true;
         }
-        if (canView) n.read = true;
       });
       
       updateNotifBadge();

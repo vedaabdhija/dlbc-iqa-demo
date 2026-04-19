@@ -67,8 +67,9 @@ def modify_user(user_id):
         with conn.cursor() as cur:
             if request.method == 'PUT':
                 data = request.json
-                cur.execute('UPDATE users SET name=%s, role=%s, dept=%s WHERE id=%s',
-                            (data.get('name'), data.get('role'), data.get('dept'), user_id))
+                # Added 'id=%s' to the SET clause and 'data.get('id', user_id)' to the parameters
+                cur.execute('UPDATE users SET id=%s, name=%s, role=%s, dept=%s WHERE id=%s',
+                            (data.get('id', user_id), data.get('name'), data.get('role'), data.get('dept'), user_id))
                 conn.commit()
                 return jsonify({"success": True}), 200
             if request.method == 'DELETE':
