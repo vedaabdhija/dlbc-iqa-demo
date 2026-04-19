@@ -682,405 +682,83 @@
       width: 100%;
       height: 6px;
     }
-
+    
     .prog-fill {
       height: 100%;
       border-radius: 4px;
       transition: width 0.5s ease-in-out;
     }
-
-    .prog-fill.good {
-      background: var(--green);
-    }
-
-    .prog-fill.risk {
-      background: var(--orange);
-    }
-
-    .prog-fill.critical {
-      background: var(--red);
-    }
-
-    .prog-fill.navy {
-      background: var(--navy-mid);
-    }
+    
+    .prog-fill.good { background: var(--green); }
+    .prog-fill.risk { background: var(--orange); }
+    .prog-fill.critical { background: var(--red); }
+    .prog-fill.navy { background: var(--navy-mid); }
 
     /* ─── MODALS, FORMS, & UTILITIES ─── */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(10, 20, 44, 0.6);
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      opacity: 0;
-      transition: opacity 0.2s;
+      position: fixed; inset: 0; background: rgba(10, 20, 44, 0.6); z-index: 1000;
+      display: none; align-items: center; justify-content: center; padding: 1rem;
+      opacity: 0; transition: opacity 0.2s;
     }
-
-    .modal-overlay.open {
-      display: flex;
-      opacity: 1;
-    }
-
+    .modal-overlay.open { display: flex; opacity: 1; }
     .modal {
-      background: #fff;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 550px;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: var(--shadow-lg);
-      transform: translateY(20px);
-      transition: transform 0.2s;
+      background: #fff; border-radius: 12px; width: 100%; max-width: 550px; max-height: 90vh;
+      display: flex; flex-direction: column; box-shadow: var(--shadow-lg);
+      transform: translateY(20px); transition: transform 0.2s;
     }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; }
+    .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--navy); }
+    .modal-close { background: none; border: none; font-size: 1.2rem; color: var(--gray-500); cursor: pointer; transition: color 0.2s; padding: 0.2rem;}
+    .modal-close:hover { color: var(--red); }
+    .modal-body { padding: 1.5rem; overflow-y: auto; }
+    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end; gap: 0.75rem; background: var(--gray-50); border-radius: 0 0 12px 12px; }
 
-    .modal-overlay.open .modal {
-      transform: translateY(0);
-    }
+    .form-group { margin-bottom: 1rem; width: 100%; }
+    .form-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--gray-700); margin-bottom: 0.4rem; }
+    .form-control { width: 100%; padding: 0.65rem 0.85rem; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); font-size: 0.9rem; transition: border 0.2s; background: #fff; font-family: inherit; }
+    .form-control:focus { outline: none; border-color: var(--navy-mid); }
+    .form-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; width: 100%; }
+    .form-row.cols-2 > .form-group { flex: 1; min-width: 200px; margin-bottom: 0; }
+    .form-row.cols-3 > .form-group { flex: 1; min-width: 150px; margin-bottom: 0; }
+    .form-row.cols-4 > .form-group { flex: 1; min-width: 120px; margin-bottom: 0; }
 
-    .modal-header {
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--gray-200);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+    .btn { padding: 0.6rem 1.1rem; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; font-family: inherit; }
+    .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.75rem; }
+    .btn-primary { background: var(--navy); color: #fff; }
+    .btn-primary:hover { background: var(--navy-light); }
+    .btn-secondary { background: var(--gray-50); color: var(--gray-700); border: 1px solid var(--gray-200); }
+    .btn-secondary:hover { background: var(--gray-200); }
+    .btn-danger { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+    .btn-danger:hover { background: #fecaca; }
+    .btn-success { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+    .btn-success:hover { background: #bbf7d0; }
+    .btn-gold { background: var(--gold); color: #fff; }
+    .btn-gold:hover { background: #b48523; }
 
-    .modal-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--navy);
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.2rem;
-      color: var(--gray-500);
-      cursor: pointer;
-      transition: color 0.2s;
-      padding: 0.2rem;
-    }
-
-    .modal-close:hover {
-      color: var(--red);
-    }
-
-    .modal-body {
-      padding: 1.5rem;
-      overflow-y: auto;
-    }
-
-    .modal-footer {
-      padding: 1rem 1.5rem;
-      border-top: 1px solid var(--gray-200);
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.75rem;
-      background: var(--gray-50);
-      border-radius: 0 0 12px 12px;
-    }
-
-    .form-group {
-      margin-bottom: 1rem;
-      width: 100%;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--gray-700);
-      margin-bottom: 0.4rem;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 0.65rem 0.85rem;
-      border: 1.5px solid var(--gray-200);
-      border-radius: var(--radius-sm);
-      font-size: 0.9rem;
-      transition: border 0.2s;
-      background: #fff;
-      font-family: inherit;
-    }
-
-    .form-control:focus {
-      outline: none;
-      border-color: var(--navy-mid);
-    }
-
-    .form-row {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
-      width: 100%;
-    }
-
-    .form-row.cols-2>.form-group {
-      flex: 1;
-      min-width: 200px;
-      margin-bottom: 0;
-    }
-
-    .form-row.cols-3>.form-group {
-      flex: 1;
-      min-width: 150px;
-      margin-bottom: 0;
-    }
-
-    .form-row.cols-4>.form-group {
-      flex: 1;
-      min-width: 120px;
-      margin-bottom: 0;
-    }
-
-    .btn {
-      padding: 0.6rem 1.1rem;
-      border-radius: var(--radius-sm);
-      font-size: 0.85rem;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      font-family: inherit;
-    }
-
-    .btn-sm {
-      padding: 0.4rem 0.75rem;
-      font-size: 0.75rem;
-    }
-
-    .btn-primary {
-      background: var(--navy);
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      background: var(--navy-light);
-    }
-
-    .btn-secondary {
-      background: var(--gray-50);
-      color: var(--gray-700);
-      border: 1px solid var(--gray-200);
-    }
-
-    .btn-secondary:hover {
-      background: var(--gray-200);
-    }
-
-    .btn-danger {
-      background: #fee2e2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-    }
-
-    .btn-danger:hover {
-      background: #fecaca;
-    }
-
-    .btn-success {
-      background: #dcfce7;
-      color: #16a34a;
-      border: 1px solid #bbf7d0;
-    }
-
-    .btn-success:hover {
-      background: #bbf7d0;
-    }
-
-    .btn-gold {
-      background: var(--gold);
-      color: #fff;
-    }
-
-    .btn-gold:hover {
-      background: #b48523;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--navy-mid);
-      color: #fff;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      box-shadow: var(--shadow-lg);
-      font-size: 0.9rem;
-      font-weight: 500;
-      transform: translateY(100px);
-      opacity: 0;
-      transition: all 0.3s;
-      z-index: 2000;
-    }
-
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: var(--navy-mid); color: #fff; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: var(--shadow-lg); font-size: 0.9rem; font-weight: 500; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 2000; }
+    .toast.show { transform: translateY(0); opacity: 1; }
 
     /* TABS & REPORT FORM ELEMENTS */
-    .tab-nav {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      border-bottom: 2px solid var(--gray-200);
-      padding-bottom: 0.5rem;
-      overflow-x: auto;
-    }
-
-    .tab-btn {
-      background: none;
-      border: none;
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--gray-500);
-      cursor: pointer;
-      border-radius: var(--radius-sm);
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-
-    .tab-btn:hover {
-      background: var(--gray-100);
-      color: var(--navy);
-    }
-
-    .tab-btn.active {
-      background: var(--navy);
-      color: #fff;
-    }
-
-    .sec-card {
-      background: #fff;
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius-sm);
-      padding: 1.25rem;
-      margin-bottom: 1rem;
-      box-shadow: var(--shadow);
-    }
-
-    .sec-title {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .sec-num {
-      width: 28px;
-      height: 28px;
-      background: var(--navy);
-      color: #fff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.8rem;
-      font-family: 'DM Mono', monospace;
-      flex-shrink: 0;
-    }
-
-    .sec-title-text {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--navy);
-    }
-
-    .sec-sub {
-      font-size: 0.8rem;
-      color: var(--gray-500);
-      margin-bottom: 1rem;
-    }
-
-    .field-row {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-bottom: 0.8rem;
-    }
-
-    .field {
-      flex: 1;
-      min-width: 180px;
-    }
-
-    .field label {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--gray-600);
-      margin-bottom: 0.3rem;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: 0.55rem 0.75rem;
-      border: 1px solid var(--gray-300);
-      border-radius: 4px;
-      font-size: 0.85rem;
-    }
-
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      outline: none;
-      border-color: var(--navy-mid);
-    }
-
-    .repeatable {
-      padding: 1rem;
-      border: 1px dashed var(--gray-300);
-      border-radius: var(--radius-sm);
-      margin-bottom: 1rem;
-      position: relative;
-      background: var(--gray-50);
-    }
-
-    .remove-btn {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      background: #fee2e2;
-      color: #dc2626;
-      border: none;
-      padding: 0.3rem 0.6rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .add-row-btn {
-      background: none;
-      border: 1px dashed var(--navy-mid);
-      color: var(--navy-mid);
-      padding: 0.6rem 1rem;
-      width: 100%;
-      border-radius: var(--radius-sm);
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .add-row-btn:hover {
-      background: var(--navy-subtle);
-    }
+    .tab-nav { display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 2px solid var(--gray-200); padding-bottom: 0.5rem; overflow-x: auto; }
+    .tab-btn { background: none; border: none; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 600; color: var(--gray-500); cursor: pointer; border-radius: var(--radius-sm); transition: all 0.2s; white-space: nowrap; }
+    .tab-btn:hover { background: var(--gray-100); color: var(--navy); }
+    .tab-btn.active { background: var(--navy); color: #fff; }
+    
+    .sec-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+    .sec-title { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+    .sec-num { width: 28px; height: 28px; background: var(--navy); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; font-family: 'DM Mono', monospace; flex-shrink: 0; }
+    .sec-title-text { font-size: 1.05rem; font-weight: 600; color: var(--navy); }
+    .sec-sub { font-size: 0.8rem; color: var(--gray-500); margin-bottom: 1rem; }
+    .field-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+    .field { flex: 1; min-width: 180px; }
+    .field label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--gray-600); margin-bottom: 0.3rem; }
+    .field input, .field select, .field textarea { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--gray-300); border-radius: 4px; font-size: 0.85rem; }
+    .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--navy-mid); }
+    .repeatable { padding: 1rem; border: 1px dashed var(--gray-300); border-radius: var(--radius-sm); margin-bottom: 1rem; position: relative; background: var(--gray-50); }
+    .remove-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #fee2e2; color: #dc2626; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.7rem; cursor: pointer; font-weight: 600;}
+    .add-row-btn { background: none; border: 1px dashed var(--navy-mid); color: var(--navy-mid); padding: 0.6rem 1rem; width: 100%; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .add-row-btn:hover { background: var(--navy-subtle); }
 
     /* Mobile Toggle Enhancement */
     .mobile-toggle {
@@ -1095,7 +773,7 @@
       line-height: 1;
       transition: background 0.2s;
     }
-
+    
     .mobile-toggle:hover {
       background: var(--gray-200);
     }
@@ -1847,16 +1525,29 @@
     <div class="card-body">`;
 
       const isAdmin = (currentUser.role === 'Super Admin' || currentUser.role === 'Admin');
+      
+      // Filter notifications based on user role and the notification's target audience
+      const visibleNotifs = notifications.filter(n => {
+        if (isAdmin) return true; // Admins always see everything so they can manage them
+        
+        const t = n.target || 'All';
+        if (t === 'All') return true;
+        if (t === 'HOD' && currentUser.role === 'HOD') return true;
+        if (t === 'Committee' && currentUser.role === 'Committee Head') return true;
+        
+        return false; // Hide if it doesn't match their role
+      });
 
-      if (notifications.length === 0) {
+      if (visibleNotifs.length === 0) {
         html += `<p style="font-size:.8rem;color:var(--gray-400);">No notifications.</p>`;
       } else {
-        html += notifications.map(n => `
+        html += visibleNotifs.map(n => `
         <div class="notif-item" style="${n.read ? 'opacity:0.6;' : ''}">
           <div class="notif-dot ${n.type}"></div>
           <div style="flex:1;">
             <div class="notif-text" style="font-weight:${n.read ? '400' : '600'};">${n.text}</div>
             <div class="notif-time">${formatDBDate(n.time)}</div>
+            ${isAdmin && n.target && n.target !== 'All' ? `<div style="font-size:0.65rem; color:var(--navy); margin-top:4px; font-weight:600; background:var(--navy-pale); padding:2px 6px; border-radius:4px; display:inline-block;">🎯 Sent to: ${n.target}s Only</div>` : ''}
           </div>
           ${isAdmin ? `<button class="btn btn-danger btn-sm" style="padding:2px 6px; font-size:10px; height:fit-content;" onclick="deleteNotification('${n.id}')">✕</button>` : ''}
         </div>`).join('');
@@ -1866,7 +1557,19 @@
     }
 
     function updateNotifBadge() {
-      const unread = notifications.filter(n => !n.read).length;
+      const isAdmin = (currentUser.role === 'Super Admin' || currentUser.role === 'Admin');
+      
+      // Only count unread notifications that the user is actually allowed to see
+      const unread = notifications.filter(n => {
+        if (n.read) return false;
+        if (isAdmin) return true;
+        const t = n.target || 'All';
+        if (t === 'All') return true;
+        if (t === 'HOD' && currentUser.role === 'HOD') return true;
+        if (t === 'Committee' && currentUser.role === 'Committee Head') return true;
+        return false;
+      }).length;
+
       const badge = document.getElementById('notif-badge');
       if (badge) {
         badge.textContent = unread;
@@ -1875,7 +1578,21 @@
     }
 
     function markAllRead() {
-      notifications.forEach(n => n.read = true);
+      const isAdmin = (currentUser.role === 'Super Admin' || currentUser.role === 'Admin');
+      
+      // Only mark the notifications as read if they are visible to the current user
+      notifications.forEach(n => {
+        let canView = false;
+        if (isAdmin) canView = true;
+        else {
+          const t = n.target || 'All';
+          if (t === 'All' || (t === 'HOD' && currentUser.role === 'HOD') || (t === 'Committee' && currentUser.role === 'Committee Head')) {
+            canView = true;
+          }
+        }
+        if (canView) n.read = true;
+      });
+      
       updateNotifBadge();
       showPage('notifications');
     }
@@ -1948,7 +1665,7 @@
       try {
         const res = await fetch(`${API_URL}/notifications/${encodeURIComponent(id)}`, { method: 'DELETE' });
         if (res.ok) { await fetchCoreData(); showPage('notifications'); updateNotifBadge(); showToast("Notification deleted."); return; }
-        else { showToast("Error deleting notification from database."); return; }
+        else { console.warn("Backend error: Endpoint might be missing. Falling back to local delete."); }
       } catch (e) { console.warn("Backend unavailable, using local delete."); }
       notifications = notifications.filter(n => String(n.id) !== String(id));
       showPage('notifications'); updateNotifBadge(); showToast("Notification deleted locally.");
@@ -2563,7 +2280,7 @@
       try {
         const res = await fetch(`${API_URL}/calendar-docs/${encodeURIComponent(id)}`, { method: 'DELETE' });
         if (res.ok) { await fetchCoreData(); showPage('calendar'); showToast("Document deleted."); return; }
-        else { showToast("Error deleting document from database."); return; }
+        else { console.warn("Backend error: Endpoint might be missing. Falling back to local delete."); }
       } catch (e) { console.warn("Backend unavailable, using local delete."); }
 
       calendarDocs = calendarDocs.filter(d => String(d.id) !== String(id));
@@ -2608,8 +2325,8 @@
       try {
         const res = await fetch(`${API_URL}/calendar/${encodeURIComponent(id)}`, { method: 'DELETE' });
         if (res.ok) { await fetchCoreData(); showPage('calendar'); showToast("Event deleted."); return; }
-        else { showToast("Error deleting event from database."); return; }
-      } catch (e) { console.warn("Backend unavailable, using local delete."); }
+        else { console.warn("Backend error: Endpoint might be missing. Falling back to local delete."); }
+      } catch(e) { console.warn("Backend unavailable, using local delete."); }
       calendarEvents = calendarEvents.filter(ev => String(ev.id) !== String(id));
       showPage('calendar'); showToast("Event deleted locally.");
     }
