@@ -114,6 +114,17 @@ def manage_notifications():
                 return jsonify({"success": True, "notification": new_notif}), 201
     finally: conn.close()
 
+@app.route('/api/notifications/<notif_id>', methods=['DELETE'])
+def delete_notification(notif_id):
+    conn = get_db_connection()
+    if not conn: return jsonify({"error": "DB Fail"}), 500
+    try:
+        with conn.cursor() as cur:
+            cur.execute('DELETE FROM notifications WHERE id = %s', (notif_id,))
+            conn.commit()
+            return jsonify({"success": True}), 200
+    finally: conn.close()
+
 # --- SUBMISSIONS ---
 @app.route('/api/submissions', methods=['GET', 'POST'])
 def manage_submissions():
@@ -153,6 +164,17 @@ def manage_calendar():
                             (data.get('date'), data.get('event'), data.get('type')))
                 conn.commit()
                 return jsonify({"success": True}), 201
+    finally: conn.close()
+
+@app.route('/api/calendar/<event_id>', methods=['DELETE'])
+def remove_calendar_event(event_id):
+    conn = get_db_connection()
+    if not conn: return jsonify({"error": "DB Fail"}), 500
+    try:
+        with conn.cursor() as cur:
+            cur.execute('DELETE FROM calendar_events WHERE id = %s', (event_id,))
+            conn.commit()
+            return jsonify({"success": True}), 200
     finally: conn.close()
 
 @app.route('/api/calendar-docs', methods=['GET', 'POST'])
