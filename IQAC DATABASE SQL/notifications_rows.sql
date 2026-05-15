@@ -1,0 +1,1 @@
+INSERT INTO "public"."notifications" ("id", "text", "time", "type", "target") VALUES (46, 'WELCOME TO IQAC', '2026-04-19 18:35:03.51', 'info', 'All'), (47, 'WELCOME ALL HODs TO IQAC', '2026-04-19 18:35:30.742', 'warning', 'HOD'), (48, 'WELCOME COMMITTEE TO IQAC', '2026-04-19 18:36:44.406', 'critical', 'Committee');

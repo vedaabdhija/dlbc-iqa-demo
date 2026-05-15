@@ -1,0 +1,1 @@
+INSERT INTO "public"."calendar_events" ("id", "event_date", "event_title", "event_type") VALUES (1, '2026-04-08', 'Auto-generated Monthly Report', 'iqac'), (2, '2026-03-29', 'Kalotsav', 'academic'), (3, '2026-03-29', 'Kalotsav', 'academic'), (4, '2099-01-01', '__DIAG_TEST_EVENT__', 'diagnostic');

@@ -1,0 +1,20 @@
+id,pass,name,role,dept
+alumni@dlbce.ac.in,Pass@123,Dr. Satish Naidu,Committee Head,Alumni / NSS
+ardc@dlbce.ac.in,Pass@123,Dr. B. Parthasarathi,Committee Head,Anti Ragging and Discipline
+canteen@dlbce.ac.in,Pass@123,Mr. B. Santosh Kumar,Committee Head,Canteen and Food
+esi@dlbce.ac.in,Pass@123,Dr. Vamsi Krishna,Committee Head,"Entrepreneurship, Startup and Innovation"
+hod_bhs@dlbce.ac.in,Pass@123,Dr. Radha Devi,HOD,"BHA, Literary and Cultural"
+hod_ce@dlbce.ac.in,Pass@123,Prof. Dr. G. Tirupati Naidu,HOD,"Civil, SDG"
+hod_cse@dlbce.ac.in,Pass@123,Prof. Dr. D. Madhavi,HOD,"CSE, ICC, Student Grievances and Redressal, IT & Website"
+hod_ece@dlbce.ac.in,Pass@123,J. Babu,HOD,ECE
+hod_eee@dlbce.ac.in,Pass@123,ANANDH,HOD,EEE
+iqac@dlbce.ac.in,Admin@1234,Prof. C. Narasimham,Super Admin,"Equity, IQAC"
+maintenance@dlbce.ac.in,Pass@123,Dr. Arunima Mahapatra,Committee Head,Maintenance
+minorities@dlbce.ac.in,Pass@123,Dr. Amareshwari,Committee Head,Minorities Committee
+obc@dlbce.ac.in,Pass@123,B. Ramarao,Committee Head,OBC Committee
+placement@dlbce.ac.in,Pass@123,Dr. Bhujanga Rao,Committee Head,SDC / Internship / Placement / III Cell
+principal@dlbce.ac.in,Pass@123,Deepak Chowdary,Principal,
+profbodies@dlbce.ac.in,Pass@123,Dr. Giridhar,Committee Head,Professional Bodies
+rnd@dlbce.ac.in,Pass@123,Dr. K. V. Rama Rao,Committee Head,R&D
+scst@dlbce.ac.in,Pass@123,Sangeeth Kumar,Committee Head,SC/ST Committee
+sports@dlbce.ac.in,Pass@123,Dr. Lakshman Reddy,Committee Head,Sports
