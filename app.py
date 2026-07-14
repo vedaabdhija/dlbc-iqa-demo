@@ -10,10 +10,6 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/')
-def home():
-    return render_template('index.html')
-
 def get_db_connection():
     try:
         conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
@@ -21,10 +17,129 @@ def get_db_connection():
     except Exception as e:
         print(f"DB Error: {e}")
         return None
-        return conn
+
+# --- DATABASE INITIALIZATION FOR DYNAMIC ORG DATA ---
+def init_db():
+    conn = get_db_connection()
+    if not conn: return
+    try:
+        with conn.cursor() as cur:
+            # Create tables for dynamic configurations
+            cur.execute('''
+                CREATE TABLE IF NOT EXISTS config_departments (name VARCHAR(255) PRIMARY KEY);
+                CREATE TABLE IF NOT EXISTS config_committees (name VARCHAR(255) PRIMARY KEY);
+                CREATE TABLE IF NOT EXISTS config_comm_sections (sec_num INTEGER PRIMARY KEY, title VARCHAR(255), description TEXT);
+            ''')
+            
+            # Seed default departments if table is empty
+            cur.execute('SELECT COUNT(*) FROM config_departments')
+            if cur.fetchone()[0] == 0:
+                depts = ['CSE', 'Civil', 'ECE', 'EEE', 'BHS']
+                for d in depts: 
+                    cur.execute('INSERT INTO config_departments (name) VALUES (%s)', (d,))
+            
+            # Seed default committees if table is empty
+            cur.execute('SELECT COUNT(*) FROM config_committees')
+            if cur.fetchone()[0] == 0:
+                comms = [
+                    'Anti Ragging and Discipline Committee', 'Internal Complaint Committee (ICC)', 
+                    'Student Grievances and Redressal Committee', 'SC/ST Committee', 'OBC Committee', 
+                    'Minorities Committee', 'R&D', 'Entrepreneurship, Startup and Innovation', 
+                    'Literary and Cultural Committee', 'Sports', 'SDC / Internship / Placement / III Cell / Career Guidance', 
+                    'Alumni / NSS', 'Maintenance Committee', 'Sustainable Development Goals (SDG)', 
+                    'Information Technology & Website', 'Canteen and Food Committee', 'Professional Bodies', 
+                    'Equity Committee', 'IQAC'
+                ]
+                for c in comms: 
+                    cur.execute('INSERT INTO config_committees (name) VALUES (%s)', (c,))
+            
+            # Seed default committee sections if table is empty
+            cur.execute('SELECT COUNT(*) FROM config_comm_sections')
+            if cur.fetchone()[0] == 0:
+                c_secs = [
+                    (101, 'Meeting Circular & Details', 'Enter meeting basic details and upload the circular below'), 
+                    (102, 'Minutes of Meeting (MoM)', 'Summarize key points discussed'), 
+                    (103, 'Action Plan', 'Planned actions based on the meeting'), 
+                    (104, 'Action Taken Report', 'Report on previously planned actions')
+                ]
+                for s in c_secs: 
+                    cur.execute('INSERT INTO config_comm_sections (sec_num, title, description) VALUES (%s, %s, %s)', s)
+            
+            conn.commit()
     except Exception as e:
-        print(f"DB Error: {e}")
-        return None
+        print(f"DB Init Error: {e}")
+    finally:
+        conn.close()
+
+# Run DB init on app load
+init_db()
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+# --- ORG CONFIGURATION (DEPTS, COMMITTEES, COMM SECTIONS) ---
+@app.route('/api/config', methods=['GET'])
+def get_config():
+    conn = get_db_connection()
+    if not conn: return jsonify({"error": "DB Fail"}), 500
+    try:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute('SELECT name FROM config_departments ORDER BY name')
+            depts = [r['name'] for r in cur.fetchall()]
+            
+            cur.execute('SELECT name FROM config_committees ORDER BY name')
+            comms = [r['name'] for r in cur.fetchall()]
+            
+            cur.execute('SELECT * FROM config_comm_sections ORDER BY sec_num')
+            c_secs = cur.fetchall()
+            
+            return jsonify({"departments": depts, "committees": comms, "comm_sections": c_secs}), 200
+    finally: conn.close()
+
+@app.route('/api/config/<entity_type>', methods=['POST'])
+def add_config(entity_type):
+    conn = get_db_connection()
+    data = request.json
+    try:
+        with conn.cursor() as cur:
+            if entity_type == 'departments':
+                cur.execute('INSERT INTO config_departments (name) VALUES (%s)', (data['name'],))
+            elif entity_type == 'committees':
+                cur.execute('INSERT INTO config_committees (name) VALUES (%s)', (data['name'],))
+            elif entity_type == 'comm_sections':
+                cur.execute('SELECT COALESCE(MAX(sec_num), 100) + 1 FROM config_comm_sections')
+                next_sec = cur.fetchone()[0]
+                cur.execute('INSERT INTO config_comm_sections (sec_num, title, description) VALUES (%s, %s, %s)', 
+                            (next_sec, data['title'], data.get('description', '')))
+            conn.commit()
+            return jsonify({"success": True}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    finally: conn.close()
+
+@app.route('/api/config/<entity_type>/<path:item_id>', methods=['DELETE', 'PUT'])
+def modify_config(entity_type, item_id):
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            if request.method == 'DELETE':
+                if entity_type == 'departments':
+                    cur.execute('DELETE FROM config_departments WHERE name = %s', (item_id,))
+                elif entity_type == 'committees':
+                    cur.execute('DELETE FROM config_committees WHERE name = %s', (item_id,))
+                elif entity_type == 'comm_sections':
+                    cur.execute('DELETE FROM config_comm_sections WHERE sec_num = %s', (item_id,))
+            elif request.method == 'PUT':
+                data = request.json
+                if entity_type == 'comm_sections':
+                    cur.execute('UPDATE config_comm_sections SET title = %s, description = %s WHERE sec_num = %s', 
+                                (data['title'], data.get('description', ''), item_id))
+            conn.commit()
+            return jsonify({"success": True}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+    finally: conn.close()
 
 # --- AUTH & USERS ---
 @app.route('/api/auth/login', methods=['POST'])
@@ -65,7 +180,6 @@ def modify_user(user_id):
         with conn.cursor() as cur:
             if request.method == 'PUT':
                 data = request.json
-                # Added 'id=%s' to the SET clause and 'data.get('id', user_id)' to the parameters
                 cur.execute('UPDATE users SET id=%s, name=%s, role=%s, dept=%s WHERE id=%s',
                             (data.get('id', user_id), data.get('name'), data.get('role'), data.get('dept'), user_id))
                 conn.commit()
