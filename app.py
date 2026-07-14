@@ -74,10 +74,6 @@ def init_db():
 # Run DB init on app load
 init_db()
 
-@app.route('/')
-def home():
-    return render_template('index.html')
-
 # --- ORG CONFIGURATION (DEPTS, COMMITTEES, COMM SECTIONS) ---
 @app.route('/api/config', methods=['GET'])
 def get_config():
