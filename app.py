@@ -21,7 +21,6 @@ def get_db_connection():
     except Exception as e:
         print(f"DB Error: {e}")
         return None
-        )
         return conn
     except Exception as e:
         print(f"DB Error: {e}")
