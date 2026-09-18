@@ -24,6 +24,13 @@ The application uses **PostgreSQL** as its database management system.
 
 The project includes SQL and CSV resources related to the IQAC database used during development.
 
+## 🔐 Demo Login
+
+A demo account is available for project evaluation.
+
+**Username:** Provided upon request  
+**Password:** Provided upon request
+
 ## 🏗️ Application Structure
 
 The project follows a Flask-based web application structure:
